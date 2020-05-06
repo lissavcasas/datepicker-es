@@ -1,40 +1,33 @@
-import 'date-fns';
-import React from 'react';
-import DateFnsUtils from '@date-io/date-fns';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
+import format from "date-fns/format";
 import esLocale from "date-fns/locale/es";
+import DateFnsUtils from "@date-io/date-fns";
+import React, { useState } from "react";
+import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 
-const localeMap = {
-  es: esLocale,
-};
+class EsLocalizedUtils extends DateFnsUtils {
+  getCalendarHeaderText(date) {
+    return format(date, "LLLL", { locale: esLocale});
+  }
+  getDatePickerHeaderText(date) {
+    return format(date, "d MMM yyyy", { locale: esLocale});
+  }
+}
 
-export default function Demo() {
-  const [selectedDate, setSelectedDate] = React.useState(new Date('2014-08-18T21:11:54'));
-
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
-
+function Demo() {
+  const [selectedDate, handleDateChange] = useState(new Date());
   return (
-    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={localeMap['es']}>
-      <KeyboardDatePicker
-        okLabel="Ok"
-        cancelLabel="Cancelar"
-        margin="normal"
-        clearLabel="Limpiar"
-        id="date-picker-dialog"
+    <MuiPickersUtilsProvider utils={EsLocalizedUtils} locale={esLocale}>
+      <DatePicker
         label="Fecha"
-        clearable
-        format="dd/MM/yyyy"
         value={selectedDate}
         onChange={handleDateChange}
-        KeyboardButtonProps={{
-          'aria-label': 'change date',
-        }}
+        format="d MMM yyyy"
+        cancelLabel="cancelar"
+        clearLabel="Limpiar"
+        clearable
       />
     </MuiPickersUtilsProvider>
-  )
+  );
 }
+
+export default Demo;
